@@ -5,12 +5,12 @@ function WebRTC() {
   var myStream= false; // my media-stream
   var otherStream= false; // other guy`s media-stream
   var peerConnection = false; // RTCPeerconnection
-  var peerConfig =   {iceServers: [{url: 'stun:stun.l.google.com:19302'}] };  // set Google Stunserver
+  var peerConfig =   {iceServers: [{url: "stun:stun.l.google.com:19302"}] };  // set Google Stunserver
   var peerConstraints = {"optional": [{"DtlsSrtpKeyAgreement": true}]}; // set DTLS encrpytion
   var otherSDP = false;
-  var othersCandidates = []; // other guy's icecandidates
-  var socketEvent = document.createEvent('Event');
-  socketEvent.initEvent('socketEvent',true,true);
+  var othersCandidates = []; // other guy"s icecandidates
+  var socketEvent = document.createEvent("Event");
+  socketEvent.initEvent("socketEvent",true,true);
 
   // encode to JSON and send data to server
   var sendToServer = function(data) {
@@ -18,7 +18,7 @@ function WebRTC() {
       connection.send(JSON.stringify(data));
       return true;
     } catch(e) {
-      console.log('There is no connection to the websocket server');
+      console.log("There is no connection to the websocket server");
       return false;
     }
   };
@@ -26,10 +26,10 @@ function WebRTC() {
   // create ice-candidate
   var createRTCIceCandidate = function(candidate){
     var ice;
-    if( typeof(webkitRTCIceCandidate) === 'function') {
+    if( typeof(webkitRTCIceCandidate) === "function") {
       ice = new webkitRTCIceCandidate(candidate);
     }
-    else if( typeof(RTCIceCandidate) === 'function') {
+    else if( typeof(RTCIceCandidate) === "function") {
       ice = new RTCIceCandidate(candidate);
     }
     return ice;
@@ -38,10 +38,10 @@ function WebRTC() {
   // create an session description object
   var createRTCSessionDescription = function(sdp){
     var newSdp;
-    if( typeof(RTCSessionDescription) === 'function') {
+    if( typeof(RTCSessionDescription) === "function") {
       newSdp = new RTCSessionDescription(sdp);
     }
-    else if( typeof(webkitRTCSessionDescription) === 'function') {
+    else if( typeof(webkitRTCSessionDescription) === "function") {
       newSdp = new webkitRTCSessionDescription(sdp);
     }
     return newSdp;
@@ -63,14 +63,14 @@ function WebRTC() {
   // exchange of connection info is done, set SDP and ice-candidates
   var handshakeDone = function(){
     peerConnection.setRemoteDescription(createRTCSessionDescription(otherSDP));
-    // add other guy's ice-candidates to connection
+    // add other guy"s ice-candidates to connection
     for (var i = 0; i < othersCandidates.length; i++) {
       if (othersCandidates[i].candidate) {
         peerConnection.addIceCandidate(ceateRTCIceCandidate(othersCandidates[i].candidate));
       }
     }
     // fire event
-    socketEvent.eventType = 'p2pConnectionReady';
+    socketEvent.eventType = "p2pConnectionReady";
     document.dispatchEvent(socketEvent);
   };
 
@@ -78,10 +78,10 @@ function WebRTC() {
   var createOffer = function() {
 
     // create new peer-object
-    if( typeof(RTCPeerConnection) === 'function') {
+    if( typeof(RTCPeerConnection) === "function") {
       peerConnection = new RTCPeerConnection(peerConfig);
     }
-    else if( typeof(webkitRTCPeerConnection) === 'function') {
+    else if( typeof(webkitRTCPeerConnection) === "function") {
       peerConnection = new webkitRTCPeerConnection(peerConfig);
     }
 
@@ -90,19 +90,19 @@ function WebRTC() {
 
     // other side added stream to peerconnection
     peerConnection.onaddstream = function(e) {
-      console.log('other guys stream added');
+      console.log("other guys stream added");
       otherStream = e.stream;
       // fire event
-      socketEvent.eventType = 'streamAdded';
+      socketEvent.eventType = "streamAdded";
       document.dispatchEvent(socketEvent);
     };
 
     // we receive our icecandidates and send them to the other guy
     peerConnection.onicecandidate = function(icecandidate) {
-      console.log('icecandidate send to room '+roomId);
+      console.log("icecandidate send to room "+roomId);
       // send candidates to other guy
       var data = {
-        type: 'iceCandidate',
+        type: "iceCandidate",
         roomId: roomId,
         payload: icecandidate
       };
@@ -113,10 +113,10 @@ function WebRTC() {
     peerConnection.createOffer(function(SDP){
       // set our SDP as local description
       peerConnection.setLocalDescription(SDP);
-      console.log('sending offer to: '+roomId);
+      console.log("sending offer to: "+roomId);
       // send SDP to other guy
       var data = {
-        type: 'offer',
+        type: "offer",
       roomId: roomId,
       payload: SDP
       };
@@ -127,10 +127,10 @@ function WebRTC() {
   // create an answer for an received offer
   var createAnswer = function() {
     // create new peer-object
-    if( typeof(RTCPeerConnection) === 'function') {
+    if( typeof(RTCPeerConnection) === "function") {
       peerConnection = new RTCPeerConnection(peerConfig);
     }
-    else if( typeof(webkitRTCPeerConnection) === 'function') {
+    else if( typeof(webkitRTCPeerConnection) === "function") {
       peerConnection = new webkitRTCPeerConnection(peerConfig);
     }
 
@@ -142,19 +142,19 @@ function WebRTC() {
 
     // other side added stream to peerconnection
     peerConnection.onaddstream = function(e) {
-      console.log('stream added');
+      console.log("stream added");
       otherStream = e.stream;
       // fire event
-      socketEvent.eventType = 'streamAdded';
+      socketEvent.eventType = "streamAdded";
       document.dispatchEvent(socketEvent);
     };
 
     // we receive our icecandidates and send them to the other guy
     peerConnection.onicecandidate = function(icecandidate) {
-      console.log('icecandidate send to room '+roomId);
+      console.log("icecandidate send to room "+roomId);
       // send candidates to other guy
       var data = {
-        type: 'iceCandidate',
+        type: "iceCandidate",
         roomId: roomId,
         payload: icecandidate
       };
@@ -166,7 +166,7 @@ function WebRTC() {
       // set our SDP as local description
       peerConnection.setLocalDescription(SDP);
 
-      // add other guy's ice-candidates to connection
+      // add other guy"s ice-candidates to connection
       for (var i = 0; i < othersCandidates.length; i++) {
         if (othersCandidates[i].candidate) {
           peerConnection.addIceCandidate(ceateRTCIceCandidate(othersCandidates[i].candidate));
@@ -175,13 +175,17 @@ function WebRTC() {
 
       // send SDP to other guy
       var data = {
-        type: 'answer',
+        type: "answer",
       roomId: roomId,
       payload: SDP
       };
       sendToServer(data);
     });
   };
+
+  /*
+   * 	Public Methods
+   */
 
   // this function handles all the websocket-stuff
   this.connectToSocket = function(wsUrl){
@@ -190,18 +194,18 @@ function WebRTC() {
 
     // connection was successful
     connection.onopen = function(event){
-      console.log((new Date())+' Connection successfully established');
+      console.log((new Date())+" Connection successfully established");
     };
 
-    // connection couldn't be established
+    // connection couldn"t be established
     connection.onerror = function(error){
-      console.log((new Date())+' WebSocket connection error: ');
+      console.log((new Date())+" WebSocket connection error: ");
       console.log(error);
     };
 
     // connection was closed
     connection.onclose = function(event){
-      console.log((new Date())+' Connection was closed');
+      console.log((new Date())+" Connection was closed");
     };
 
     // this function is called whenever the server sends some data
@@ -209,34 +213,34 @@ function WebRTC() {
       try {
         var data = JSON.parse(message.data);
       } catch (e) {
-        console.log('This doesn\'t look like a valid JSON or something else went wrong.');
+        console.log("This doesn\"t look like a valid JSON or something else went wrong.");
         console.log(message);
         return;
       }
       switch( data.type ) {
         // the server has created a room and returns the room-ID
-        case 'roomCreated':
+        case "roomCreated":
           // set room
           roomId = data.payload;
 
           // fire event
-          socketEvent.eventType = 'roomCreated';
+          socketEvent.eventType = "roomCreated";
           document.dispatchEvent(socketEvent);
           break;
           // other guy wants to join our room
-        case 'offer':
-          console.log('offer received, answer will be created');
+        case "offer":
+          console.log("offer received, answer will be created");
           otherSDP = data.payload;
           createAnswer();
           break;
           // we receive the answer
-        case 'answer':
-          console.log('answer received, connection will be established');
+        case "answer":
+          console.log("answer received, connection will be established");
           otherSDP = data.payload;
           handshakeDone();
           break;
           // we receive icecandidates from the other guy
-        case 'iceCandidate':
+        case "iceCandidate":
           setIceCandidates(data.payload);
           break;
       }
@@ -251,7 +255,7 @@ function WebRTC() {
   this.createRoom = function() {
     // create data-object
     var data = {
-      type: 'createRoom',
+      type: "createRoom",
       payload: false
     };
     // send data-object to server
@@ -270,11 +274,11 @@ function WebRTC() {
     }
     // check prefix
     if(navigator.getUserMedia) {
-      console.log('prefix-less');
+      console.log("prefix-less");
       getUserMedia = navigator.getUserMedia.bind(navigator);
     }
     else if(navigator.webkitGetUserMedia) {
-      console.log('webkit');
+      console.log("webkit");
       getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
     }
     // call getUserMedia
