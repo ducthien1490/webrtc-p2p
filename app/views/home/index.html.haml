@@ -1,0 +1,21 @@
+%section#login{class: "section login active"}
+  .input-wrapper
+    %a#createRoom{href: "", type: "text", class: "u-width--100 btn u-margin-bottomapitnoa-medium"}
+      create room
+    %h2
+      or
+    %input#roomidInput{type: "text", class: "u-width--100 input u-margin-top--medium", placeholder: "enter room-id...."}
+    %a#joinRoom{href: "", type: "text", class: "u-width--100 btn"}
+      join room
+
+%section#room{class: "section room"}
+  %h3
+    Room-ID:
+    %span#roomId
+  %a#closeroom{href: "", class: "btn"}
+    close room
+  .video-wrapper
+    %video#otherVideo.other-video{src: "", autoplay: true}
+    %video#ownVideo.own-video{src: "", autoplay: true, muted: true}
+= javascript_include_tag "client"
+= javascript_include_tag "home"
